@@ -15,11 +15,7 @@ pub struct TabInfo {
 }
 
 impl TabBar {
-    pub fn ui(
-        ui: &mut Ui,
-        tabs: &[TabInfo],
-        active_tab: Option<&str>,
-    ) -> Option<TabBarAction> {
+    pub fn ui(ui: &mut Ui, tabs: &[TabInfo], active_tab: Option<&str>) -> Option<TabBarAction> {
         let mut action = None;
 
         ui.horizontal(|ui| {
@@ -52,7 +48,11 @@ impl TabBar {
                     });
             });
 
-            if home_response.response.interact(egui::Sense::click()).clicked() {
+            if home_response
+                .response
+                .interact(egui::Sense::click())
+                .clicked()
+            {
                 action = Some(TabBarAction::SelectHome);
             }
 
@@ -86,7 +86,11 @@ impl TabBar {
                     });
             });
 
-            if add_response.response.interact(egui::Sense::click()).clicked() {
+            if add_response
+                .response
+                .interact(egui::Sense::click())
+                .clicked()
+            {
                 action = Some(TabBarAction::NewTab);
             }
 

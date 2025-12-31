@@ -49,7 +49,7 @@ fn load_icon() -> egui::IconData {
 
             if in_shape && dist < 28.0 {
                 // Indigo color from theme
-                rgba[idx] = 99;     // R
+                rgba[idx] = 99; // R
                 rgba[idx + 1] = 102; // G
                 rgba[idx + 2] = 241; // B
                 rgba[idx + 3] = 255; // A

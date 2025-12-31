@@ -4,6 +4,7 @@ use super::message::MqttMessage;
 
 #[derive(Debug, Clone, Default)]
 pub struct TopicNode {
+    #[allow(dead_code)]
     pub name: String,
     pub full_path: String,
     pub children: HashMap<String, TopicNode>,
@@ -57,6 +58,7 @@ impl TopicNode {
         self.messages.last()
     }
 
+    #[allow(dead_code)]
     pub fn total_children_count(&self) -> usize {
         let mut count = self.children.len();
         for child in self.children.values() {
@@ -97,36 +99,38 @@ impl TopicTree {
     }
 
     fn recalculate_topic_count(&mut self) {
-        self.total_topics = self.count_topics(&self.root);
+        self.total_topics = Self::count_topics(&self.root);
     }
 
-    fn count_topics(&self, node: &TopicNode) -> usize {
+    fn count_topics(node: &TopicNode) -> usize {
         let mut count = if node.messages.is_empty() { 0 } else { 1 };
         for child in node.children.values() {
-            count += self.count_topics(child);
+            count += Self::count_topics(child);
         }
         count
     }
 
+    #[allow(dead_code)]
     pub fn clear(&mut self) {
         self.root = TopicNode::new("", "");
         self.total_messages = 0;
         self.total_topics = 0;
     }
 
+    #[allow(dead_code)]
     pub fn get_node(&self, topic: &str) -> Option<&TopicNode> {
         let parts: Vec<&str> = topic.split('/').collect();
-        self.get_node_recursive(&self.root, &parts)
+        Self::get_node_recursive(&self.root, &parts)
     }
 
-    fn get_node_recursive<'a>(&self, node: &'a TopicNode, parts: &[&str]) -> Option<&'a TopicNode> {
+    fn get_node_recursive<'a>(node: &'a TopicNode, parts: &[&str]) -> Option<&'a TopicNode> {
         if parts.is_empty() {
             return Some(node);
         }
 
         let part = parts[0];
         if let Some(child) = node.children.get(part) {
-            self.get_node_recursive(child, &parts[1..])
+            Self::get_node_recursive(child, &parts[1..])
         } else {
             None
         }

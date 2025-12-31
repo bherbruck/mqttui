@@ -2,8 +2,9 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Default)]
 pub enum MqttProtocol {
+    #[default]
     Mqtt,
     MqttWs,
     Mqtts,
@@ -39,14 +40,9 @@ impl MqttProtocol {
     }
 }
 
-impl Default for MqttProtocol {
-    fn default() -> Self {
-        MqttProtocol::Mqtt
-    }
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Default)]
 pub enum MqttVersion {
+    #[default]
     V311,
     V5,
 }
@@ -61,12 +57,6 @@ impl MqttVersion {
 
     pub fn all() -> &'static [MqttVersion] {
         &[MqttVersion::V311, MqttVersion::V5]
-    }
-}
-
-impl Default for MqttVersion {
-    fn default() -> Self {
-        MqttVersion::V311
     }
 }
 
@@ -123,6 +113,7 @@ impl Default for ConnectionConfig {
 }
 
 impl ConnectionConfig {
+    #[allow(dead_code)]
     pub fn new(name: &str, host: &str, port: u16) -> Self {
         Self {
             name: name.to_string(),
@@ -153,7 +144,7 @@ impl ConnectionConfig {
                 .clone()
                 .unwrap_or_else(|| format!("mqttui-{}", &self.id[..8]))
         } else {
-            format!("mqttui-{}", Uuid::new_v4().to_string()[..8].to_string())
+            format!("mqttui-{}", &Uuid::new_v4().to_string()[..8])
         }
     }
 }

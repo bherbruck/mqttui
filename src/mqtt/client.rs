@@ -9,6 +9,7 @@ use crate::config::ConnectionConfig;
 use super::message::{ConnectionStatus, MqttMessage};
 
 #[derive(Debug)]
+#[allow(dead_code)]
 pub enum MqttCommand {
     Connect,
     Disconnect,
@@ -18,6 +19,7 @@ pub enum MqttCommand {
 }
 
 #[derive(Debug)]
+#[allow(dead_code)]
 pub enum MqttEvent {
     Connected,
     Disconnected,
@@ -194,6 +196,7 @@ impl MqttConnection {
         }
     }
 
+    #[allow(dead_code)]
     pub fn subscribe(&mut self, topic: &str, qos: u8) {
         if let Some(tx) = &self.command_tx {
             let _ = tx.send(MqttCommand::Subscribe(topic.to_string(), qos));

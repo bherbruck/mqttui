@@ -97,8 +97,7 @@ impl MessageView {
             } else if let Some(topic) = topic {
                 // Show topic info without message
                 ui.label(
-                    RichText::new(format!("Topic: {}", topic))
-                        .color(MqttUiTheme::TEXT_SECONDARY),
+                    RichText::new(format!("Topic: {}", topic)).color(MqttUiTheme::TEXT_SECONDARY),
                 );
                 ui.add_space(16.0);
                 ui.centered_and_justified(|ui| {
@@ -123,12 +122,24 @@ impl MessageView {
     fn render_message(&mut self, ui: &mut Ui, msg: &MqttMessage) {
         // Message metadata
         ui.horizontal(|ui| {
-            ui.label(RichText::new("Topic:").color(MqttUiTheme::TEXT_SECONDARY).small());
-            ui.label(RichText::new(&msg.topic).color(MqttUiTheme::ACCENT_INFO).small());
+            ui.label(
+                RichText::new("Topic:")
+                    .color(MqttUiTheme::TEXT_SECONDARY)
+                    .small(),
+            );
+            ui.label(
+                RichText::new(&msg.topic)
+                    .color(MqttUiTheme::ACCENT_INFO)
+                    .small(),
+            );
         });
 
         ui.horizontal(|ui| {
-            ui.label(RichText::new("QoS:").color(MqttUiTheme::TEXT_SECONDARY).small());
+            ui.label(
+                RichText::new("QoS:")
+                    .color(MqttUiTheme::TEXT_SECONDARY)
+                    .small(),
+            );
             ui.label(
                 RichText::new(msg.qos.to_string())
                     .color(MqttUiTheme::qos_color(msg.qos))
@@ -137,7 +148,11 @@ impl MessageView {
 
             ui.add_space(16.0);
 
-            ui.label(RichText::new("Retain:").color(MqttUiTheme::TEXT_SECONDARY).small());
+            ui.label(
+                RichText::new("Retain:")
+                    .color(MqttUiTheme::TEXT_SECONDARY)
+                    .small(),
+            );
             ui.label(
                 RichText::new(if msg.retain { "Yes" } else { "No" })
                     .color(if msg.retain {
@@ -150,7 +165,11 @@ impl MessageView {
 
             ui.add_space(16.0);
 
-            ui.label(RichText::new("Size:").color(MqttUiTheme::TEXT_SECONDARY).small());
+            ui.label(
+                RichText::new("Size:")
+                    .color(MqttUiTheme::TEXT_SECONDARY)
+                    .small(),
+            );
             ui.label(
                 RichText::new(format!("{} bytes", msg.payload.len()))
                     .color(MqttUiTheme::TEXT_PRIMARY)
@@ -159,7 +178,11 @@ impl MessageView {
         });
 
         ui.horizontal(|ui| {
-            ui.label(RichText::new("Time:").color(MqttUiTheme::TEXT_SECONDARY).small());
+            ui.label(
+                RichText::new("Time:")
+                    .color(MqttUiTheme::TEXT_SECONDARY)
+                    .small(),
+            );
             ui.label(
                 RichText::new(msg.timestamp.format("%Y-%m-%d %H:%M:%S%.3f").to_string())
                     .color(MqttUiTheme::TEXT_PRIMARY)
@@ -223,13 +246,12 @@ impl MessageView {
                 }
             }
             PayloadFormat::Text => msg.payload_as_string(),
-            PayloadFormat::Hex => {
-                msg.payload
-                    .iter()
-                    .map(|b| format!("{:02X}", b))
-                    .collect::<Vec<_>>()
-                    .join(" ")
-            }
+            PayloadFormat::Hex => msg
+                .payload
+                .iter()
+                .map(|b| format!("{:02X}", b))
+                .collect::<Vec<_>>()
+                .join(" "),
             PayloadFormat::Base64 => {
                 use base64::{engine::general_purpose::STANDARD, Engine};
                 STANDARD.encode(&msg.payload)
