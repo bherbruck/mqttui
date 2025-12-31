@@ -29,6 +29,7 @@ impl MqttMessage {
         serde_json::from_slice(&self.payload).ok()
     }
 
+    #[allow(dead_code)]
     pub fn payload_preview(&self, max_len: usize) -> String {
         let s = self.payload_as_string();
         if s.len() > max_len {
@@ -38,6 +39,7 @@ impl MqttMessage {
         }
     }
 
+    #[allow(dead_code)]
     pub fn is_json(&self) -> bool {
         self.payload_as_json().is_some()
     }
@@ -65,15 +67,7 @@ impl ConnectionStatus {
         matches!(self, ConnectionStatus::Connected)
     }
 
-    pub fn color(&self) -> egui::Color32 {
-        match self {
-            ConnectionStatus::Disconnected => egui::Color32::GRAY,
-            ConnectionStatus::Connecting => egui::Color32::YELLOW,
-            ConnectionStatus::Connected => egui::Color32::GREEN,
-            ConnectionStatus::Error(_) => egui::Color32::RED,
-        }
-    }
-
+    #[allow(dead_code)]
     pub fn text(&self) -> &str {
         match self {
             ConnectionStatus::Disconnected => "Disconnected",
