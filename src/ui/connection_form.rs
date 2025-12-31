@@ -156,7 +156,11 @@ impl ConnectionForm {
                             };
                         }
                         if ui
-                            .button(if self.show_password { "\u{1F441}" } else { "\u{1F441}\u{0336}" })
+                            .button(if self.show_password {
+                                "\u{1F441}"
+                            } else {
+                                "\u{1F441}\u{0336}"
+                            })
                             .clicked()
                         {
                             self.show_password = !self.show_password;

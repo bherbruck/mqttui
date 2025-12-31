@@ -57,8 +57,9 @@ impl ConnectionsGrid {
         let card_width = 200.0;
         let card_height = 180.0;
         let spacing = 16.0;
-        let cards_per_row = ((available_width + spacing) / (card_width + spacing)).floor() as usize;
-        let cards_per_row = cards_per_row.max(1);
+        let _cards_per_row =
+            ((available_width + spacing) / (card_width + spacing)).floor() as usize;
+        let _cards_per_row = _cards_per_row.max(1);
 
         egui::ScrollArea::vertical()
             .auto_shrink([false, false])
@@ -74,7 +75,13 @@ impl ConnectionsGrid {
                         let is_connected = status.is_connected();
 
                         let response = ui.allocate_ui(Vec2::new(card_width, card_height), |ui| {
-                            Self::render_connection_card(ui, config, &status, card_width, card_height);
+                            Self::render_connection_card(
+                                ui,
+                                config,
+                                &status,
+                                card_width,
+                                card_height,
+                            );
                         });
 
                         // Handle click on card
@@ -85,26 +92,25 @@ impl ConnectionsGrid {
                         // Context menu
                         response.response.context_menu(|ui| {
                             if ui.button("Edit").clicked() {
-                                action = Some(ConnectionsGridAction::EditConnection(config.id.clone()));
+                                action =
+                                    Some(ConnectionsGridAction::EditConnection(config.id.clone()));
                                 ui.close_menu();
                             }
-                            if is_connected {
-                                if ui.button("Disconnect").clicked() {
-                                    action = Some(ConnectionsGridAction::Disconnect(config.id.clone()));
-                                    ui.close_menu();
-                                }
-                            } else {
-                                if ui.button("Connect").clicked() {
-                                    action = Some(ConnectionsGridAction::Connect(config.id.clone()));
-                                    ui.close_menu();
-                                }
+                            if is_connected && ui.button("Disconnect").clicked() {
+                                action = Some(ConnectionsGridAction::Disconnect(config.id.clone()));
+                                ui.close_menu();
+                            } else if !is_connected && ui.button("Connect").clicked() {
+                                action = Some(ConnectionsGridAction::Connect(config.id.clone()));
+                                ui.close_menu();
                             }
                             ui.separator();
                             if ui
                                 .button(RichText::new("Delete").color(MqttUiTheme::ACCENT_ERROR))
                                 .clicked()
                             {
-                                action = Some(ConnectionsGridAction::DeleteConnection(config.id.clone()));
+                                action = Some(ConnectionsGridAction::DeleteConnection(
+                                    config.id.clone(),
+                                ));
                                 ui.close_menu();
                             }
                         });
@@ -166,11 +172,7 @@ impl ConnectionsGrid {
                     ui.horizontal(|ui| {
                         Identicon::draw_status_dot(ui, is_connected);
                         ui.add_space(4.0);
-                        ui.label(
-                            RichText::new(status.text())
-                                .color(status.color())
-                                .small(),
-                        );
+                        ui.label(RichText::new(status.text()).color(status.color()).small());
 
                         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                             if let Some(last) = &config.last_connected {

@@ -35,8 +35,12 @@ impl TopicTreeView {
             );
 
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                // Sort button
-                ui.button(RichText::new("A → Z").color(MqttUiTheme::TEXT_SECONDARY).small());
+                // Sort button (placeholder for future functionality)
+                let _ = ui.button(
+                    RichText::new("A → Z")
+                        .color(MqttUiTheme::TEXT_SECONDARY)
+                        .small(),
+                );
 
                 // Expand all button
                 if ui
@@ -84,7 +88,11 @@ impl TopicTreeView {
         }
 
         if let Some(msg) = node.last_message() {
-            if msg.payload_as_string().to_lowercase().contains(&filter_lower) {
+            if msg
+                .payload_as_string()
+                .to_lowercase()
+                .contains(&filter_lower)
+            {
                 return true;
             }
         }
@@ -105,7 +113,12 @@ impl TopicTreeView {
         }
     }
 
-    fn render_node(&mut self, ui: &mut Ui, name: &str, node: &mut TopicNode) -> Option<MqttMessage> {
+    fn render_node(
+        &mut self,
+        ui: &mut Ui,
+        name: &str,
+        node: &mut TopicNode,
+    ) -> Option<MqttMessage> {
         let mut selected_message = None;
         let has_children = !node.children.is_empty();
         let is_selected = self.selected_topic.as_ref() == Some(&node.full_path);
@@ -131,11 +144,17 @@ impl TopicTreeView {
 
                 // Expand/collapse arrow
                 if has_children {
-                    let arrow = if node_expanded { "\u{25BC}" } else { "\u{25B6}" };
+                    let arrow = if node_expanded {
+                        "\u{25BC}"
+                    } else {
+                        "\u{25B6}"
+                    };
                     if ui
                         .add(
                             egui::Label::new(
-                                RichText::new(arrow).color(MqttUiTheme::TEXT_MUTED).size(10.0),
+                                RichText::new(arrow)
+                                    .color(MqttUiTheme::TEXT_MUTED)
+                                    .size(10.0),
                             )
                             .sense(egui::Sense::click()),
                         )
@@ -203,8 +222,11 @@ impl TopicTreeView {
             // Render children if expanded
             if node.expanded && has_children {
                 // Collect child names first
-                let child_names: Vec<String> =
-                    node.sorted_children().iter().map(|(n, _)| n.to_string()).collect();
+                let child_names: Vec<String> = node
+                    .sorted_children()
+                    .iter()
+                    .map(|(n, _)| n.to_string())
+                    .collect();
 
                 ui.indent(&node_path, |ui| {
                     for child_name in child_names {

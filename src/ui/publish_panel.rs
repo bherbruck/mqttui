@@ -122,12 +122,12 @@ impl PublishPanel {
                 );
 
                 // Format button (for JSON prettify)
-                if self.format == PublishFormat::Json {
-                    if ui.button("\u{2630}").on_hover_text("Format JSON").clicked() {
-                        if let Ok(json) = serde_json::from_str::<serde_json::Value>(&self.payload) {
-                            if let Ok(formatted) = serde_json::to_string_pretty(&json) {
-                                self.payload = formatted;
-                            }
+                if self.format == PublishFormat::Json
+                    && ui.button("\u{2630}").on_hover_text("Format JSON").clicked()
+                {
+                    if let Ok(json) = serde_json::from_str::<serde_json::Value>(&self.payload) {
+                        if let Ok(formatted) = serde_json::to_string_pretty(&json) {
+                            self.payload = formatted;
                         }
                     }
                 }
@@ -261,15 +261,16 @@ impl PublishPanel {
     fn encode_payload(&self) -> Vec<u8> {
         match self.format {
             PublishFormat::Text | PublishFormat::Json => self.payload.as_bytes().to_vec(),
-            PublishFormat::Hex => {
-                self.payload
-                    .split_whitespace()
-                    .filter_map(|s| u8::from_str_radix(s, 16).ok())
-                    .collect()
-            }
+            PublishFormat::Hex => self
+                .payload
+                .split_whitespace()
+                .filter_map(|s| u8::from_str_radix(s, 16).ok())
+                .collect(),
             PublishFormat::Base64 => {
                 use base64::{engine::general_purpose::STANDARD, Engine};
-                STANDARD.decode(&self.payload).unwrap_or_else(|_| self.payload.as_bytes().to_vec())
+                STANDARD
+                    .decode(&self.payload)
+                    .unwrap_or_else(|_| self.payload.as_bytes().to_vec())
             }
         }
     }

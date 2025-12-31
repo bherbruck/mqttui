@@ -6,8 +6,8 @@ use eframe::egui;
 use crate::config::AppConfig;
 use crate::mqtt::{ConnectionStatus, MqttConnection, MqttMessage, TopicTree};
 use crate::ui::{
-    ConnectionForm, ConnectionsGrid, ConnectionsGridAction, FormAction, MessageView,
-    MqttUiTheme, PublishAction, PublishPanel, TabBar, TabBarAction, TabInfo, TopicTreeView,
+    ConnectionForm, ConnectionsGrid, ConnectionsGridAction, FormAction, MessageView, MqttUiTheme,
+    PublishAction, PublishPanel, TabBar, TabBarAction, TabInfo, TopicTreeView,
 };
 
 #[derive(Default, PartialEq, Clone)]
@@ -156,7 +156,7 @@ impl MqttUiApp {
             conn.poll_events();
 
             // Process new messages into topic tree
-            let tree = self.topic_trees.entry(id.clone()).or_insert_with(TopicTree::new);
+            let tree = self.topic_trees.entry(id.clone()).or_default();
             while conn.messages.len() > tree.total_messages {
                 if let Some(msg) = conn.messages.get(tree.total_messages).cloned() {
                     tree.insert(msg);
@@ -293,7 +293,9 @@ impl MqttUiApp {
         ui.horizontal(|ui| {
             // Connection details toggle
             if ui
-                .button(egui::RichText::new("Connection Details").color(MqttUiTheme::TEXT_SECONDARY))
+                .button(
+                    egui::RichText::new("Connection Details").color(MqttUiTheme::TEXT_SECONDARY),
+                )
                 .clicked()
             {
                 self.show_connection_details = !self.show_connection_details;
@@ -322,21 +324,19 @@ impl MqttUiApp {
 
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                 // Connect/Disconnect button
-                if is_connected {
-                    if ui
+                if is_connected
+                    && ui
                         .add(
                             egui::Button::new(
-                                egui::RichText::new("Disconnect")
-                                    .color(MqttUiTheme::TEXT_PRIMARY),
+                                egui::RichText::new("Disconnect").color(MqttUiTheme::TEXT_PRIMARY),
                             )
                             .fill(MqttUiTheme::BG_LIGHT),
                         )
                         .clicked()
-                    {
-                        self.disconnect(id);
-                    }
-                } else {
-                    if ui
+                {
+                    self.disconnect(id);
+                } else if !is_connected
+                    && ui
                         .add(
                             egui::Button::new(
                                 egui::RichText::new("\u{25B6} Connect")
@@ -345,9 +345,8 @@ impl MqttUiApp {
                             .fill(MqttUiTheme::ACCENT_PRIMARY),
                         )
                         .clicked()
-                    {
-                        self.connect(id);
-                    }
+                {
+                    self.connect(id);
                 }
             });
         });
@@ -394,10 +393,7 @@ impl MqttUiApp {
             .min_width(200.0)
             .max_width(400.0)
             .show_inside(ui, |ui| {
-                let panel = self
-                    .publish_panels
-                    .entry(id_string.clone())
-                    .or_insert_with(PublishPanel::new);
+                let panel = self.publish_panels.entry(id_string.clone()).or_default();
 
                 if let Some(action) = panel.ui(ui, is_connected) {
                     match action {
@@ -424,10 +420,7 @@ impl MqttUiApp {
             .min_width(300.0)
             .max_width(600.0)
             .show_inside(ui, |ui| {
-                let message_view = self
-                    .message_views
-                    .entry(id_string.clone())
-                    .or_insert_with(MessageView::new);
+                let message_view = self.message_views.entry(id_string.clone()).or_default();
 
                 let selected_msg = self.selected_messages.get(&id_string).cloned().flatten();
                 let selected_topic = self
@@ -440,18 +433,11 @@ impl MqttUiApp {
 
         // Central panel - Topic tree
         egui::CentralPanel::default().show_inside(ui, |ui| {
-            let tree = self
-                .topic_trees
-                .entry(id_string.clone())
-                .or_insert_with(TopicTree::new);
-            let tree_view = self
-                .topic_tree_views
-                .entry(id_string.clone())
-                .or_insert_with(TopicTreeView::new);
+            let tree = self.topic_trees.entry(id_string.clone()).or_default();
+            let tree_view = self.topic_tree_views.entry(id_string.clone()).or_default();
 
             if let Some(msg) = tree_view.ui(ui, &mut tree.root) {
-                self.selected_messages
-                    .insert(id_string.clone(), Some(msg));
+                self.selected_messages.insert(id_string.clone(), Some(msg));
             }
         });
     }
@@ -483,12 +469,10 @@ impl eframe::App for MqttUiApp {
                     .fill(MqttUiTheme::BG_DARK)
                     .inner_margin(16.0),
             )
-            .show(ctx, |ui| {
-                match self.view.clone() {
-                    View::Home => self.render_home(ui),
-                    View::ConnectionForm(id) => self.render_connection_form(ui, &id),
-                    View::Connection(id) => self.render_connection_view(ui, &id),
-                }
+            .show(ctx, |ui| match self.view.clone() {
+                View::Home => self.render_home(ui),
+                View::ConnectionForm(id) => self.render_connection_form(ui, &id),
+                View::Connection(id) => self.render_connection_view(ui, &id),
             });
     }
 

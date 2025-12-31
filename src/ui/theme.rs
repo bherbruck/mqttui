@@ -15,6 +15,7 @@ impl MqttUiTheme {
     pub const TEXT_MUTED: Color32 = Color32::from_rgb(100, 100, 115);
 
     pub const ACCENT_PRIMARY: Color32 = Color32::from_rgb(99, 102, 241); // Indigo
+    #[allow(dead_code)]
     pub const ACCENT_SECONDARY: Color32 = Color32::from_rgb(139, 92, 246); // Purple
     pub const ACCENT_SUCCESS: Color32 = Color32::from_rgb(34, 197, 94); // Green
     pub const ACCENT_WARNING: Color32 = Color32::from_rgb(245, 158, 11); // Amber
@@ -22,18 +23,32 @@ impl MqttUiTheme {
     pub const ACCENT_INFO: Color32 = Color32::from_rgb(59, 130, 246); // Blue
 
     pub const BORDER: Color32 = Color32::from_rgb(55, 55, 70);
+    #[allow(dead_code)]
     pub const BORDER_FOCUS: Color32 = Color32::from_rgb(99, 102, 241);
 
+    #[allow(clippy::field_reassign_with_default)]
     pub fn apply(ctx: &egui::Context) {
         let mut style = Style::default();
 
         // Font sizes
         style.text_styles = [
-            (TextStyle::Small, FontId::new(12.0, FontFamily::Proportional)),
+            (
+                TextStyle::Small,
+                FontId::new(12.0, FontFamily::Proportional),
+            ),
             (TextStyle::Body, FontId::new(14.0, FontFamily::Proportional)),
-            (TextStyle::Button, FontId::new(14.0, FontFamily::Proportional)),
-            (TextStyle::Heading, FontId::new(20.0, FontFamily::Proportional)),
-            (TextStyle::Monospace, FontId::new(13.0, FontFamily::Monospace)),
+            (
+                TextStyle::Button,
+                FontId::new(14.0, FontFamily::Proportional),
+            ),
+            (
+                TextStyle::Heading,
+                FontId::new(20.0, FontFamily::Proportional),
+            ),
+            (
+                TextStyle::Monospace,
+                FontId::new(13.0, FontFamily::Monospace),
+            ),
         ]
         .into();
 
@@ -86,6 +101,7 @@ impl MqttUiTheme {
         ctx.set_style(style);
     }
 
+    #[allow(dead_code)]
     pub fn status_color(connected: bool) -> Color32 {
         if connected {
             Self::ACCENT_SUCCESS
@@ -121,6 +137,7 @@ pub fn styled_text_edit(ui: &mut egui::Ui, text: &mut String, hint: &str) -> egu
     )
 }
 
+#[allow(dead_code)]
 pub fn styled_text_edit_multiline(
     ui: &mut egui::Ui,
     text: &mut String,
@@ -135,6 +152,10 @@ pub fn styled_text_edit_multiline(
 
 pub fn section_header(ui: &mut egui::Ui, text: &str) {
     ui.add_space(8.0);
-    ui.label(egui::RichText::new(text).color(MqttUiTheme::TEXT_SECONDARY).size(12.0));
+    ui.label(
+        egui::RichText::new(text)
+            .color(MqttUiTheme::TEXT_SECONDARY)
+            .size(12.0),
+    );
     ui.add_space(4.0);
 }

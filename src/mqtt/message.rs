@@ -52,6 +52,7 @@ impl MqttMessage {
 }
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 pub enum ConnectionStatus {
     Disconnected,
     Connecting,

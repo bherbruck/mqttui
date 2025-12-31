@@ -8,18 +8,18 @@ impl Identicon {
 
     // Vibrant color palette for identicons
     const COLORS: &'static [Color32] = &[
-        Color32::from_rgb(239, 68, 68),   // Red
-        Color32::from_rgb(249, 115, 22),  // Orange
-        Color32::from_rgb(245, 158, 11),  // Amber
-        Color32::from_rgb(132, 204, 22),  // Lime
-        Color32::from_rgb(34, 197, 94),   // Green
-        Color32::from_rgb(20, 184, 166),  // Teal
-        Color32::from_rgb(6, 182, 212),   // Cyan
-        Color32::from_rgb(59, 130, 246),  // Blue
-        Color32::from_rgb(99, 102, 241),  // Indigo
-        Color32::from_rgb(139, 92, 246),  // Purple
-        Color32::from_rgb(168, 85, 247),  // Violet
-        Color32::from_rgb(236, 72, 153),  // Pink
+        Color32::from_rgb(239, 68, 68),  // Red
+        Color32::from_rgb(249, 115, 22), // Orange
+        Color32::from_rgb(245, 158, 11), // Amber
+        Color32::from_rgb(132, 204, 22), // Lime
+        Color32::from_rgb(34, 197, 94),  // Green
+        Color32::from_rgb(20, 184, 166), // Teal
+        Color32::from_rgb(6, 182, 212),  // Cyan
+        Color32::from_rgb(59, 130, 246), // Blue
+        Color32::from_rgb(99, 102, 241), // Indigo
+        Color32::from_rgb(139, 92, 246), // Purple
+        Color32::from_rgb(168, 85, 247), // Violet
+        Color32::from_rgb(236, 72, 153), // Pink
     ];
 
     /// Simple hash function for strings
@@ -36,14 +36,14 @@ impl Identicon {
         let mut grid = [[false; Self::GRID_SIZE]; Self::GRID_SIZE];
 
         // Generate left half + center column (symmetric)
-        let half = (Self::GRID_SIZE + 1) / 2;
-        for y in 0..Self::GRID_SIZE {
+        let half = Self::GRID_SIZE.div_ceil(2);
+        for (y, row) in grid.iter_mut().enumerate() {
             for x in 0..half {
                 let bit_index = y * half + x;
                 let bit = (hash >> (bit_index % 64)) & 1;
-                grid[y][x] = bit == 1;
+                row[x] = bit == 1;
                 // Mirror to right side
-                grid[y][Self::GRID_SIZE - 1 - x] = bit == 1;
+                row[Self::GRID_SIZE - 1 - x] = bit == 1;
             }
         }
 

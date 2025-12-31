@@ -21,8 +21,8 @@ impl AppConfig {
         if path.exists() {
             let content = fs::read_to_string(&path)
                 .with_context(|| format!("Failed to read config from {:?}", path))?;
-            let config: AppConfig = serde_json::from_str(&content)
-                .with_context(|| "Failed to parse config JSON")?;
+            let config: AppConfig =
+                serde_json::from_str(&content).with_context(|| "Failed to parse config JSON")?;
             Ok(config)
         } else {
             Ok(Self::default())
@@ -35,8 +35,8 @@ impl AppConfig {
             fs::create_dir_all(parent)
                 .with_context(|| format!("Failed to create config directory {:?}", parent))?;
         }
-        let content = serde_json::to_string_pretty(self)
-            .with_context(|| "Failed to serialize config")?;
+        let content =
+            serde_json::to_string_pretty(self).with_context(|| "Failed to serialize config")?;
         fs::write(&path, content)
             .with_context(|| format!("Failed to write config to {:?}", path))?;
         Ok(())
