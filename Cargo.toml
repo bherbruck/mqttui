@@ -7,9 +7,6 @@ license = "MIT"
 authors = ["mqttui contributors"]
 
 [dependencies]
-# GUI
-iced = { version = "0.13", features = ["tokio", "advanced"] }
-
 # MQTT
 rumqttc = "0.24"
 
@@ -39,6 +36,13 @@ thiserror = "1"
 
 # Encoding
 base64 = "0.22"
+
+# GUI - tiny-skia for Windows (faster), wgpu for Linux
+[target.'cfg(windows)'.dependencies]
+iced = { version = "0.13", default-features = false, features = ["tokio", "advanced", "tiny-skia"] }
+
+[target.'cfg(not(windows))'.dependencies]
+iced = { version = "0.13", features = ["tokio", "advanced"] }
 
 [profile.release]
 opt-level = 3

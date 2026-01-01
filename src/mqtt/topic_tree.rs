@@ -137,6 +137,7 @@ impl TopicTree {
         }
     }
 
+    #[allow(dead_code)]
     pub fn get_all_topics(&self) -> Vec<String> {
         let mut topics = Vec::new();
         Self::collect_topics(&self.root, &mut topics);
@@ -144,6 +145,7 @@ impl TopicTree {
         topics
     }
 
+    #[allow(dead_code)]
     fn collect_topics(node: &TopicNode, topics: &mut Vec<String>) {
         if !node.messages.is_empty() {
             topics.push(node.full_path.clone());

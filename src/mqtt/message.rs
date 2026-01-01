@@ -32,8 +32,9 @@ impl MqttMessage {
     #[allow(dead_code)]
     pub fn payload_preview(&self, max_len: usize) -> String {
         let s = self.payload_as_string();
-        if s.len() > max_len {
-            format!("{}...", &s[..max_len])
+        if s.chars().count() > max_len {
+            let truncated: String = s.chars().take(max_len).collect();
+            format!("{}...", truncated)
         } else {
             s
         }
