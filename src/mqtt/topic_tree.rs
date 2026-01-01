@@ -67,6 +67,7 @@ impl TopicNode {
         count
     }
 
+    #[allow(dead_code)]
     pub fn sorted_children(&self) -> Vec<(&String, &TopicNode)> {
         let mut children: Vec<_> = self.children.iter().collect();
         children.sort_by(|a, b| a.0.cmp(b.0));
@@ -131,6 +132,59 @@ impl TopicTree {
         let part = parts[0];
         if let Some(child) = node.children.get(part) {
             Self::get_node_recursive(child, &parts[1..])
+        } else {
+            None
+        }
+    }
+
+    pub fn get_all_topics(&self) -> Vec<String> {
+        let mut topics = Vec::new();
+        Self::collect_topics(&self.root, &mut topics);
+        topics.sort();
+        topics
+    }
+
+    fn collect_topics(node: &TopicNode, topics: &mut Vec<String>) {
+        if !node.messages.is_empty() {
+            topics.push(node.full_path.clone());
+        }
+        for child in node.children.values() {
+            Self::collect_topics(child, topics);
+        }
+    }
+
+    pub fn get_latest_message(&self, topic: &str) -> Option<&MqttMessage> {
+        self.get_node(topic).and_then(|n| n.last_message())
+    }
+
+    pub fn expand(&mut self, topic: &str) {
+        if let Some(node) = self.get_node_mut(topic) {
+            node.expanded = true;
+        }
+    }
+
+    pub fn collapse(&mut self, topic: &str) {
+        if let Some(node) = self.get_node_mut(topic) {
+            node.expanded = false;
+        }
+    }
+
+    fn get_node_mut(&mut self, topic: &str) -> Option<&mut TopicNode> {
+        let parts: Vec<&str> = topic.split('/').collect();
+        Self::get_node_recursive_mut(&mut self.root, &parts)
+    }
+
+    fn get_node_recursive_mut<'a>(
+        node: &'a mut TopicNode,
+        parts: &[&str],
+    ) -> Option<&'a mut TopicNode> {
+        if parts.is_empty() {
+            return Some(node);
+        }
+
+        let part = parts[0];
+        if let Some(child) = node.children.get_mut(part) {
+            Self::get_node_recursive_mut(child, &parts[1..])
         } else {
             None
         }

@@ -2,13 +2,19 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Default)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Default)]
 pub enum MqttProtocol {
     #[default]
     Mqtt,
     MqttWs,
     Mqtts,
     MqttsWs,
+}
+
+impl std::fmt::Display for MqttProtocol {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.as_str())
+    }
 }
 
 impl MqttProtocol {
@@ -21,6 +27,7 @@ impl MqttProtocol {
         }
     }
 
+    #[allow(dead_code)]
     pub fn default_port(&self) -> u16 {
         match self {
             MqttProtocol::Mqtt => 1883,
@@ -30,6 +37,7 @@ impl MqttProtocol {
         }
     }
 
+    #[allow(dead_code)]
     pub fn all() -> &'static [MqttProtocol] {
         &[
             MqttProtocol::Mqtt,
@@ -47,6 +55,7 @@ pub enum MqttVersion {
     V5,
 }
 
+#[allow(dead_code)]
 impl MqttVersion {
     pub fn as_str(&self) -> &'static str {
         match self {

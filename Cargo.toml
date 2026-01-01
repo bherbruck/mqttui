@@ -2,15 +2,13 @@
 name = "mqttui"
 version = "0.1.0"
 edition = "2021"
-description = "A fast, tree-based MQTT explorer built with Rust and egui"
+description = "A fast, tree-based MQTT explorer built with Rust and iced"
 license = "MIT"
 authors = ["mqttui contributors"]
 
 [dependencies]
 # GUI
-eframe = { version = "0.29", features = ["persistence"] }
-egui = "0.29"
-egui_extras = { version = "0.29", features = ["all_loaders"] }
+iced = { version = "0.13", features = ["tokio", "advanced"] }
 
 # MQTT
 rumqttc = "0.24"
